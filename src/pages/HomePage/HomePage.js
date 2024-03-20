@@ -1,6 +1,6 @@
-// App.js
+// HomePage.js
 import React, { useState } from "react";
-import "./App.css";
+import "./HomePage.css";
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -30,7 +30,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Phi-2 Chat Game</h1>
+      <h1>Choose Your Own Adventure Game!</h1>
       <div className="chat-window">
         {messages.map((message, index) => (
           <div key={index} className={`chat-bubble ${message.sender}`}>
