@@ -5,6 +5,26 @@ import "./HomePage.css";
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const generateImage = async () => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && lastMessage.role === "assistant") {
+      const response = await fetch("http://localhost:3000/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: lastMessage.content }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setImageUrl(data.imageUrl);
+      } else {
+        console.error("Error generating image");
+      }
+    }
+  };
 
   useEffect(() => {
     const initialUserMessage = {
@@ -22,7 +42,6 @@ function App() {
       },
       body: JSON.stringify({ messages: messageHistory }),
     });
-
     const data = await response.json();
     setMessages([
       ...messages,
@@ -43,12 +62,19 @@ function App() {
   return (
     <div className="app">
       <h1>Choose Your Own Adventure Game!</h1>
-      <div className="chat-window">
-        {messages.map((message, index) => (
-          <div key={index} className={`chat-bubble ${message.role}`}>
-            {message.content}
+      <div className="game-container">
+        <div className="chat-window">
+          {messages.map((message, index) => (
+            <div key={index} className={`chat-bubble ${message.role}`}>
+              {message.content}
+            </div>
+          ))}
+        </div>
+        {imageUrl && (
+          <div className="image-container">
+            <img src={imageUrl} alt="Generated Scene" />
           </div>
-        ))}
+        )}
       </div>
       <form onSubmit={handleSubmit}>
         <input
@@ -58,6 +84,7 @@ function App() {
         />
         <button type="submit">Send</button>
       </form>
+      <button onClick={generateImage}>Generate Image</button>
     </div>
   );
 }
