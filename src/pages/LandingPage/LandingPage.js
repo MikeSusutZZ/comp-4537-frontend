@@ -48,7 +48,8 @@ function App() {
       try {
         const response = await axios.post(
           "http://localhost:3000/users/login",
-          values
+          values,
+          { withCredentials: true }
         );
         console.log(response.data);
         // Handle successful login, e.g., store the token in local storage or redirect to another page
