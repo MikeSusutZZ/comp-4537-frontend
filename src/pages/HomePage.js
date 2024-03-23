@@ -1,4 +1,7 @@
 // HomePage.js
+
+import styles from '../style/HomePage.module.css'
+
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -89,7 +92,7 @@ function App () {
   }
 
   return (
-    <div className="app">
+    <div className={styles.app}>
       <h1>Choose Your Own Adventure Game!</h1>
       <div className="game-container">
         <div className="chat-window">
