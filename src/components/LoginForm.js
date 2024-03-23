@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import TextInput from './TextInput'
 import { VStack, Button } from '@chakra-ui/react'
 import { AuthContext } from '../authentication/AuthContext'
+import axios from 'axios'
 
 function LoginForm () {
   const { login } = useContext(AuthContext)
@@ -20,18 +21,16 @@ function LoginForm () {
         /* Formik will validate the form fields based on the
         above 'registrationSchema'; if these pass validation,
         the form is submitted. */
-        onSubmit={(values, { setSubmitting }) => {
-          console.log(values)
-
-          /* When the form is submitted, the 'login' function
-          from the AuthContext is called, which sets the user's
-          authentication status to 'true'. */
-          login(values)
-          setSubmitting(false)
-
-          /* When user succesfully logs in, navigate to the
-          home page, where the user will make API calls. */
-          navigate('/home')
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            const response = await axios.post('http://localhost:4000/users/login', values)
+            localStorage.setItem('token', response.data.token) // Store the token
+            login(values) // Update login state
+            navigate('/home') // Navigate to the home page
+          } catch (error) {
+          } finally {
+            setSubmitting(false)
+          }
         }}
     >
     {formik => (

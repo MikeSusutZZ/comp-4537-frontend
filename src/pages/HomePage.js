@@ -12,7 +12,7 @@ function App () {
     // Attempt to fetch a protected route to check if the token is valid
     const checkAuth = async () => {
       try {
-        const response = await fetch('http://localhost:4000/home', {
+        const response = await fetch('http://localhost:4000/verify-token', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -40,7 +40,8 @@ function App () {
       const response = await fetch('http://localhost:4000/generate-image', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ prompt: lastMessage.content })
       })
@@ -65,7 +66,8 @@ function App () {
     const response = await fetch('http://localhost:4000/chat', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({ messages: messageHistory })
     })

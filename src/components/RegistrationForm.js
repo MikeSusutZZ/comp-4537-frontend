@@ -4,6 +4,7 @@ import { registrationSchema } from '../schemas/schemas'
 import { useNavigate } from 'react-router-dom'
 import TextInput from './TextInput'
 import { VStack, Button } from '@chakra-ui/react'
+import axios from 'axios'
 
 function RegistrationForm () {
   const navigate = useNavigate()
@@ -14,12 +15,17 @@ function RegistrationForm () {
         all values are empty -- empty initial state */
         initialValues={{ email: '', password: '' }}
         validationSchema={registrationSchema}
-        onSubmit={values => {
-          console.log(values)
-
-          /* When the user successfully registers, they'll be
-          redirected to the login page. */
-          navigate('/login')
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            // Make an HTTP request to your backend
+            await axios.post('http://localhost:4000/users', values)
+            navigate('/login')
+          } catch (error) {
+            console.error(error)
+            // If the request fails, you might want to handle errors
+            // For example, show an error message
+          }
+          setSubmitting(false) // Ensure we unset submitting state regardless of outcome
         }}
     >
     {formik => (
