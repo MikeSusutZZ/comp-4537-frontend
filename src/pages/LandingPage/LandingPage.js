@@ -3,8 +3,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import "./App.css";
+import { useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
+
   const signUpFormik = useFormik({
     initialValues: {
       email: "",
@@ -25,7 +28,10 @@ function App() {
           values
         );
         console.log(response.data);
-        // Handle successful sign-up, e.g., show a success message or redirect to another page
+        // Store the token in local storage
+        localStorage.setItem("token", response.data.token);
+        // Handle successful sign-up, e.g., redirect to another page
+        navigate("/home");
       } catch (error) {
         console.error(error);
         // Handle sign-up error, e.g., show an error message
@@ -52,7 +58,11 @@ function App() {
           { withCredentials: true }
         );
         console.log(response.data);
-        // Handle successful login, e.g., store the token in local storage or redirect to another page
+        // Store the token from the response data in local storage
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        // Handle successful login, e.g., redirect to another page
+        navigate("/home");
       } catch (error) {
         console.error(error);
         // Handle login error, e.g., show an error message
