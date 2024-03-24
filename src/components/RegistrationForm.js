@@ -6,6 +6,8 @@ import TextInput from './TextInput'
 import { VStack, Button, Box } from '@chakra-ui/react'
 import axios from 'axios'
 
+// TODO: Replace alert with Chakra UI Toast
+
 function RegistrationForm () {
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
