@@ -1,6 +1,7 @@
 // HomePage.js
 // TODO: Add user-facing messages
 // TODO: Add animated loading icon
+// TODO: Update styling for HomePage
 
 import styles from '../style/HomePage.module.css'
 
@@ -30,7 +31,7 @@ function App () {
     }
 
     checkAuth()
-  }) // Dependency array includes navigate to silence warnings
+  })
 
   const generateImage = async () => {
     const lastMessage = messages[messages.length - 1]

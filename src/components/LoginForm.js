@@ -9,6 +9,8 @@ import { AuthContext } from '../authentication/AuthContext'
 import TextInput from './TextInput'
 
 // TODO: Create file for constants, user-facing messages
+// TODO: Create server status response constants
+// TODO: Replace alert with Chakra UI Toast
 
 function LoginForm () {
   const { login } = useContext(AuthContext)

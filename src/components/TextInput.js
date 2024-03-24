@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react'
 import { useField } from 'formik'
 
-// Validates props for `TextInput` component
 TextInput.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,

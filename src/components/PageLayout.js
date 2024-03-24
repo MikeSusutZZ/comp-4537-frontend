@@ -15,8 +15,6 @@ function PageLayout ({ children }) {
 
       <Heading>Infinite Dungeon Krawler</Heading>
 
-      {/* Children passed will be, for example,
-      the Login or Registration forms. */}
       <Box
         width={{ base: '90%', md: '50%' }}
         padding={10}>
