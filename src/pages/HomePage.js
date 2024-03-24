@@ -1,4 +1,6 @@
 // HomePage.js
+// TODO: Add user-facing messages
+// TODO: Add animated loading icon
 
 import styles from '../style/HomePage.module.css'
 
@@ -17,17 +19,10 @@ function App () {
       try {
         const response = await fetch('http://localhost:4000/verify-token', {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
+          credentials: 'include'
         })
 
-        // If the request was not authorized, redirect to login page
         if (!response.ok) throw new Error('Unauthorized')
-
-        // Otherwise, perhaps set state indicating the user is authenticated
-        // This is where you might also fetch user-specific data
       } catch (error) {
         console.error(error)
         navigate('/')
@@ -42,10 +37,7 @@ function App () {
     if (lastMessage && lastMessage.role === 'assistant') {
       const response = await fetch('http://localhost:4000/generate-image', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        },
+        credentials: 'include',
         body: JSON.stringify({ prompt: lastMessage.content })
       })
       if (response.ok) {
@@ -68,10 +60,7 @@ function App () {
   const fetchAssistantReply = async (messageHistory) => {
     const response = await fetch('http://localhost:4000/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      },
+      credentials: 'include',
       body: JSON.stringify({ messages: messageHistory })
     })
     const data = await response.json()

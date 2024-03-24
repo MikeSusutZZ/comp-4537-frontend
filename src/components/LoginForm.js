@@ -21,10 +21,7 @@ function LoginForm () {
         validationSchema={loginSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            const response = await axios.post('http://localhost:4000/users/login', values)
-
-            // TODO: Use cookies for authentication
-            localStorage.setItem('token', response.data.token)
+            await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
             login(values)
             alert("You've successfully logged in!")
             navigate('/home')
