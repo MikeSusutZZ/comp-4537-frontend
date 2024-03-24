@@ -32,13 +32,13 @@ function LoginForm () {
               setServerError("Server isn't responding. Please try again later.")
             }
             if (error.response.status === 401) {
-              setServerError('Invalid password')
+              setServerError(error.response.data)
             }
             if (error.response.status === 404) {
-              setServerError('User does not exist')
+              setServerError(error.response.data)
             }
             if (error.response.status === 500) {
-              setServerError('Server error')
+              setServerError(error.response.data)
             }
           } finally {
             setSubmitting(false)

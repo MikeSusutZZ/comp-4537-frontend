@@ -20,13 +20,13 @@ function RegistrationForm () {
             navigate('/login')
           } catch (error) {
             if (!error.response) {
-              setServerError("Server isn't responding. Please try again later.")
+              setServerError(error.response.data)
             }
             if (error.response.status === 409) {
-              setServerError('User already exists')
+              setServerError(error.response.data)
             }
             if (error.response.status === 500) {
-              setServerError('Server error')
+              setServerError(error.response.data)
             }
           }
           setSubmitting(false)
