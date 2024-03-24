@@ -17,15 +17,14 @@ function RegistrationForm () {
         onSubmit={async (values, { setSubmitting }) => {
           try {
             await axios.post('http://localhost:4000/users', values)
+            alert("You've successfully registered! Please log in.")
             navigate('/login')
           } catch (error) {
             if (!error.response) {
               setServerError(error.response.data)
-            }
-            if (error.response.status === 409) {
+            } else if (error.response.status === 409) {
               setServerError(error.response.data)
-            }
-            if (error.response.status === 500) {
+            } else if (error.response.status === 500) {
               setServerError(error.response.data)
             }
           }

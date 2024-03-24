@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik'
 import { VStack, Button, Box } from '@chakra-ui/react'
 import axios from 'axios'
 
-import { registrationSchema } from '../schemas/schemas'
+import { loginSchema } from '../schemas/schemas'
 import { AuthContext } from '../authentication/AuthContext'
 import TextInput from './TextInput'
 
@@ -18,7 +18,7 @@ function LoginForm () {
   return (
     <Formik
         initialValues={{ email: '', password: '' }}
-        validationSchema={registrationSchema}
+        validationSchema={loginSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
             const response = await axios.post('http://localhost:4000/users/login', values)
@@ -26,18 +26,16 @@ function LoginForm () {
             // TODO: Use cookies for authentication
             localStorage.setItem('token', response.data.token)
             login(values)
+            alert("You've successfully logged in!")
             navigate('/home')
           } catch (error) {
             if (!error.response) {
               setServerError("Server isn't responding. Please try again later.")
-            }
-            if (error.response.status === 401) {
+            } else if (error.response.status === 401) {
               setServerError(error.response.data)
-            }
-            if (error.response.status === 404) {
+            } else if (error.response.status === 404) {
               setServerError(error.response.data)
-            }
-            if (error.response.status === 500) {
+            } else if (error.response.status === 500) {
               setServerError(error.response.data)
             }
           } finally {
