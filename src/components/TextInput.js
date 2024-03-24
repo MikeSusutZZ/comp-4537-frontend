@@ -1,8 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react'
 import { useField } from 'formik'
 
-// eslint-disable-next-line react/prop-types
+// Validates props for `TextInput` component
+TextInput.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string
+}
+
 function TextInput ({ name, label, type = 'text' }) {
   const [field, meta] = useField(name)
   return (
