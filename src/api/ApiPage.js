@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const ApiPage = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [apiResponse, setApiResponse] = useState('');
+  const [inputValue, setInputValue] = useState('')
+  const [apiResponse, setApiResponse] = useState('')
 
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
+    setInputValue(event.target.value)
+  }
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     // Placeholder for API call
     // Replace URL with your actual API endpoint
-    const apiURL = 'YOUR_API_ENDPOINT_HERE';
-    
+    const apiURL = 'YOUR_API_ENDPOINT_HERE'
+
     try {
       const response = await fetch(apiURL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ data: inputValue }),
-      });
-      const data = await response.json();
+        body: JSON.stringify({ data: inputValue })
+      })
+      const data = await response.json()
       // Assuming the API response is the data you want to display
-      setApiResponse(data);
+      setApiResponse(data)
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setApiResponse('An error occurred. Please try again.');
+      console.error('Error fetching data:', error)
+      setApiResponse('An error occurred. Please try again.')
     }
-  };
+  }
 
   return (
     <div className="apiPage">
@@ -48,7 +48,7 @@ const ApiPage = () => {
       </div>
       {/* Add styling as needed */}
     </div>
-  );
-};
+  )
+}
 
-export default ApiPage;
+export default ApiPage
