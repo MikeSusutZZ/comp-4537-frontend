@@ -1,8 +1,3 @@
-// HomePage.js
-// TODO: Add user-facing messages
-// TODO: Add animated loading icon
-// TODO: Update styling for HomePage
-
 import styles from '../style/HomePage.module.css'
 
 import React, { useState, useEffect } from 'react'
@@ -13,6 +8,8 @@ function App () {
   const [input, setInput] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const navigate = useNavigate()
+  const [apiCallCounter, setApiCallCounter] = useState(0) // Added API call counter state
+  const MAX_API_CALLS = 20 // Set a constant for maximum allowed API calls
 
   useEffect(() => {
     // Attempt to fetch a protected route to check if the token is valid
@@ -31,7 +28,7 @@ function App () {
     }
 
     checkAuth()
-  })
+  }, [])
 
   const generateImage = async () => {
     const lastMessage = messages[messages.length - 1]
@@ -44,6 +41,7 @@ function App () {
       if (response.ok) {
         const data = await response.json()
         setImageUrl(data.imageUrl)
+        setApiCallCounter(prevCount => prevCount + 1) // Increment API call counter
       } else {
         console.error('Error generating image')
       }
@@ -70,6 +68,7 @@ function App () {
       messageHistory[messageHistory.length - 1],
       { role: 'assistant', content: data.message }
     ])
+    setApiCallCounter(prevCount => prevCount + 1) // Increment API call counter
   }
 
   const handleSubmit = async (e) => {
@@ -107,6 +106,7 @@ function App () {
         <button type="submit">Send</button>
       </form>
       <button onClick={generateImage}>Generate Image</button>
+      <p>API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p> {/* Display remaining API calls */}
     </div>
   )
 }
