@@ -114,6 +114,9 @@ function App() {
       </form>
       <button onClick={generateImage}>Generate Image</button>
       <p>API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p>
+
+      {/*Dice section*/}
+      
     </div>
   );
 }

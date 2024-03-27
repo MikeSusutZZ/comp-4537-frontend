@@ -4,8 +4,8 @@
 }
 
 .leftSide {
-  background-color: blue;
-  color: white;
+  background-color: rgb(61, 61, 208);
+  color: rgb(255, 255, 255);
   width: 33.33%;
   display: flex;
   justify-content: center;

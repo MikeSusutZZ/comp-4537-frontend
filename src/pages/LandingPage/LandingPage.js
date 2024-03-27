@@ -73,7 +73,7 @@ function App() {
   return (
     <div className="App">
       <div className="leftSide">
-        <h1>Insert Title Here</h1>
+        <h1>Role-Playing Generator</h1>
       </div>
       <div className="rightSide">
         {/* Sign Up Form */}
