@@ -1,5 +1,8 @@
-/* HomePage.css
-body {
+/* 
+
+  .app {
+    max-width: 100%;
+    padding: 20px;
     margin: 0;
     padding: 0;
     background-color: #1c1c1c;
@@ -7,14 +10,10 @@ body {
     font-family: Arial, sans-serif;
   }
 
-  .app {
-    max-width: 100%;
-    padding: 20px;
-  }
-
-  h1 {
+  .app h1 {
     text-align: center;
     color: #37996b;
+    
   }
 
   .game-container {
@@ -86,4 +85,4 @@ body {
     color: #fff;
     border: none;
     cursor: pointer;
-  } */
+  }  */
