@@ -23,7 +23,7 @@ function LoginForm () {
         validationSchema={loginSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
+            await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users/login', values, { withCredentials: true })
             login(values)
             alert("You've successfully logged in!")
             navigate('/home')

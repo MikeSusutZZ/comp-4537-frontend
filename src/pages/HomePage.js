@@ -15,7 +15,7 @@ function App () {
     // Attempt to fetch a protected route to check if the token is valid
     const checkAuth = async () => {
       try {
-        const response = await fetch('http://localhost:4000/verify-token', {
+        const response = await fetch('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/verify-token', {
           method: 'GET',
           credentials: 'include'
         })
@@ -33,7 +33,7 @@ function App () {
   const generateImage = async () => {
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.role === 'assistant') {
-      const response = await fetch('http://localhost:4000/generate-image', {
+      const response = await fetch('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/generate-image', {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ prompt: lastMessage.content })
@@ -57,7 +57,7 @@ function App () {
   }, [])
 
   const fetchAssistantReply = async (messageHistory) => {
-    const response = await fetch('http://localhost:4000/chat', {
+    const response = await fetch('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/chat', {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({ messages: messageHistory })

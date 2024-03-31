@@ -18,7 +18,7 @@ function RegistrationForm () {
         validationSchema={registrationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await axios.post('http://localhost:4000/users', values)
+            await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users', values)
             alert("You've successfully registered! Please log in.")
             navigate('/login')
           } catch (error) {

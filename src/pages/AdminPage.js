@@ -1,69 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
-const adminDataAPI = '/api/admin-data'; // Placeholder API endpoint for admin data
-
-// Simulate API call to get admin data
-const fetchAdminData = async () => {
-    try {
-        const response = await axios.get(adminDataAPI);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching admin data", error);
-        return [];
-    }
-};
+const adminDataAPI = 'https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users' // Updated API endpoint
 
 const AdminPage = () => {
-    const navigate = useNavigate();
-    const [adminData, setAdminData] = useState([]);
+  const [adminData, setAdminData] = useState([]) // State to store admin data
 
-    useEffect(() => {
-        // Attempt to fetch a protected route to check if the token is valid
-        const checkAuth = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/verify-token', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
+  useEffect(() => {
+    // Fetch admin data on component mount
+    const fetchAdminData = async () => {
+      try {
+        const response = await axios.get(adminDataAPI)
+        setAdminData(response.data) // Set fetched data to state
+      } catch (error) {
+        console.error('Error fetching admin data', error)
+      }
+    }
 
-                if (!response.ok) throw new Error('Unauthorized');
-                
-                // If authorized, fetch admin data
-                const data = await fetchAdminData();
-                setAdminData(data);
+    fetchAdminData()
+  }, []) // Empty dependency array means this runs once on mount
 
-            } catch (error) {
-                console.error(error);
-                navigate('/');
-            }
-        };
+  const pageStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '50px'
+  }
 
-        checkAuth();
-    }, [navigate]); // Include navigate in the dependency array
+  const tableStyle = {
+    borderCollapse: 'collapse',
+    width: '80%',
+    maxWidth: '600px'
+  }
 
-    return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>API Calls</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {adminData.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.name}</td>
-                            <td>{item.apiCalls}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-};
+  const thTdStyle = {
+    border: '1px solid #ddd',
+    textAlign: 'left',
+    padding: '8px'
+  }
 
-export default AdminPage;
+  const thStyle = {
+    ...thTdStyle,
+    backgroundColor: '#f2f2f2'
+  }
+
+  return (
+    <div style={pageStyle}>
+      <h1>Admin Dashboard</h1>
+      <table style={tableStyle}>
+        <thead>
+          <tr>
+            <th style={thStyle}>Name</th>
+            <th style={thStyle}>API Calls</th>
+          </tr>
+        </thead>
+        <tbody>
+          {adminData.map((item, index) => (
+            <tr key={index}>
+              <td style={thTdStyle}>{item.email}</td>
+              <td style={thTdStyle}>{item.apiCallCounter}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export default AdminPage
