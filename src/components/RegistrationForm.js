@@ -18,11 +18,12 @@ function RegistrationForm () {
         validationSchema={registrationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users', values)
+            // await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users', values)
+            await axios.post('http://localhost:4000/users', values)
             alert("You've successfully registered! Please log in.")
             navigate('/login')
           } catch (error) {
-            if (!error.response) {
+            if (error.response) {
               setServerError(error.response.data)
             } else if (error.response.status === 409) {
               setServerError(error.response.data)
