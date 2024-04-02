@@ -5,23 +5,19 @@ import AdminPage from './pages/AdminPage'
 import { Routes, Route } from 'react-router-dom'
 import { ChakraProvider } from '@chakra-ui/react'
 import LoginPage from './pages/LoginPage'
-import { AuthProvider } from './authentication/AuthContext'
-import PrivateRoute from './authentication/PrivateRoute'
 
 function App () {
   return (
-    <AuthProvider>
-      <ChakraProvider>
-        <Routes>
-          <Route path="/" element={<RegistrationPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
+    <ChakraProvider>
+      <Routes>
+        <Route path="/" element={<RegistrationPage />} />
+        <Route path="/register" element={<RegistrationPage />} />
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
-          <Route path="/admin" element={<AdminPage/>} />
-        </Routes>
-      </ChakraProvider>
-    </AuthProvider>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/admin" element={<AdminPage/>} />
+      </Routes>
+    </ChakraProvider>
   )
 }
 

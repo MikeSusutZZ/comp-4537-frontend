@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Formik } from 'formik'
 import { VStack, Button, Box } from '@chakra-ui/react'
 import axios from 'axios'
 
 import { loginSchema } from '../schemas/schemas'
-import { AuthContext } from '../authentication/AuthContext'
 import TextInput from './TextInput'
 
 // TODO: Create file for constants, user-facing messages
@@ -13,21 +12,24 @@ import TextInput from './TextInput'
 // TODO: Replace alert with Chakra UI Toast
 
 function LoginForm () {
-  const { login } = useContext(AuthContext)
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
 
   return (
     <Formik
         initialValues={{ email: '', password: '' }}
+
         validationSchema={loginSchema}
+
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
+            const response = await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
             // await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users/login', values, { withCredentials: true })
-            login(values)
-            alert("You've successfully logged in!")
-            navigate('/home')
+
+            if (response.status === 200) {
+              alert("You've successfully logged in!")
+              navigate('/home')
+            }
           } catch (error) {
             if (!error.response) {
               setServerError("Server isn't responding. Please try again later.")
