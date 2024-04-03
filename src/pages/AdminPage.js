@@ -1,10 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const adminDataAPI = 'https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users'
 
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([])
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/verify-token', {
+          method: 'GET',
+          credentials: 'include'
+        })
+        if (!response.ok) {
+          const error = new Error('Unauthorized')
+          error.response = response
+          throw error
+        }
+        // You can process the response if it's needed here...
+      } catch (error) {
+        console.error(error)
+        navigate('/login') // Navigate to login if unauthorized
+      }
+    }
+
+    checkAuth()
+  }, [navigate])
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -22,7 +46,7 @@ const AdminPage = () => {
   const resetCalls = async (userId) => {
     console.log(`Resetting calls for user ID: ${userId}`)
     // Placeholder for the actual API call to reset the user's call count
-    // Example: await axios.post(`/reset-calls/${userId}`)
+    await axios.patch(`/reset-api-call-count?email=${userID}`)
   }
 
   const pageStyle = {
