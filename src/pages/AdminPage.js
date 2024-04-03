@@ -43,10 +43,16 @@ const AdminPage = () => {
     fetchAdminData()
   }, [])
 
-  const resetCalls = async (userId) => {
-    console.log(`Resetting calls for user ID: ${userId}`)
-    // Placeholder for the actual API call to reset the user's call count
-    await axios.patch(`/reset-api-call-count?email=${userID}`)
+  const resetCalls = async (email) => {
+    console.log(`Resetting calls for email: ${email}`)
+    try {
+      // Assuming the backend endpoint to reset the call count is expecting a PATCH request with the user's email as a query parameter
+      const response = await axios.patch(`/reset-api-call-count?email=${email}`)
+      console.log('Reset successful', response.data)
+      // Optional: Refresh admin data to reflect changes or give visual feedback
+    } catch (error) {
+      console.error('Error resetting calls', error)
+    }
   }
 
   const pageStyle = {
@@ -89,7 +95,7 @@ const AdminPage = () => {
       <table style={tableStyle}>
         <thead>
           <tr>
-            <th style={thStyle}>Name</th>
+            <th style={thStyle}>Email</th>
             <th style={thStyle}>API Calls</th>
             <th style={thStyle}>Actions</th>
           </tr>
@@ -102,7 +108,7 @@ const AdminPage = () => {
               <td style={thTdStyle}>
                 <button
                   style={buttonStyle}
-                  onClick={() => resetCalls(item.id)} // Assuming 'id' is the unique identifier for a user
+                  onClick={() => resetCalls(item.email)} // Now using email to identify the user for reset
                 >
                   Reset Calls
                 </button>
