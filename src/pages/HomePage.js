@@ -1,38 +1,38 @@
-import styles from '../style/HomePage.module.css'
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function App () {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [expandedImage, setExpandedImage] = useState(null)
   const navigate = useNavigate()
   const [apiCallCounter, setApiCallCounter] = useState(0)
   const MAX_API_CALLS = 20
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/verify-token', {
-          method: 'GET',
-          credentials: 'include'
-        })
-        if (!response.ok) {
-          const error = new Error('Unauthorized')
-          error.response = response
-          throw error
-        }
-        // You can process the response if it's needed here...
-      } catch (error) {
-        console.error(error)
-        navigate('/login') // Navigate to login if unauthorized
-      }
-    }
-
+    // Check authentication on mount
     checkAuth()
   }, [navigate])
 
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/verify-token', {
+        method: 'GET',
+        credentials: 'include'
+      })
+      if (!response.ok) {
+        throw new Error('Unauthorized')
+      }
+      // Authorization successful
+    } catch (error) {
+      console.error(error)
+      navigate('/login') // Navigate to login if unauthorized
+    }
+  }
+
   const generateImage = async () => {
+    setIsLoading(true)
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.role === 'assistant') {
       try {
@@ -48,29 +48,28 @@ function App () {
           throw new Error('Failed to generate image')
         }
         const data = await response.json()
-        setImageUrl(data.imageUrl)
-        setApiCallCounter(prevCount => prevCount + 1)
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: 'image', content: data.imageUrl }
+        ])
+        setApiCallCounter((prevCount) => prevCount + 1)
       } catch (error) {
         console.error(error.message)
+      } finally {
+        setIsLoading(false)
       }
     }
   }
 
-  // This useEffect will only run once, on component mount
-  useEffect(() => {
-    const initialUserMessage = {
-      role: 'user',
-      content: 'I am ready to start the Choose Your Own Adventure Game!'
-    }
-    fetchAssistantReply([initialUserMessage])
-  }, [])
-
   const fetchAssistantReply = async (messageHistory) => {
     try {
+      const filteredMessageHistory = messageHistory.filter(
+        (message) => message.role !== 'image'
+      )
       const response = await fetch('http://localhost:4000/chat', {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({ messages: messageHistory }),
+        body: JSON.stringify({ messages: filteredMessageHistory }),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -79,12 +78,12 @@ function App () {
         throw new Error('Failed to fetch assistant reply')
       }
       const data = await response.json()
-      setMessages(prevMessages => [
+      setMessages((prevMessages) => [
         ...prevMessages,
         messageHistory[messageHistory.length - 1],
         { role: 'assistant', content: data.message }
       ])
-      setApiCallCounter(prevCount => prevCount + 1)
+      setApiCallCounter((prevCount) => prevCount + 1)
     } catch (error) {
       console.error(error.message)
     }
@@ -97,33 +96,60 @@ function App () {
     fetchAssistantReply([...messages, userMessage])
   }
 
+  const handleImageClick = (imageUrl) => {
+    setExpandedImage(imageUrl)
+  }
+
+  const handleCloseExpandedImage = () => {
+    setExpandedImage(null)
+  }
+
   return (
-    <div className={styles.app}>
-      <h1>Choose Your Own Adventure Game!</h1>
-      <div className="game-container">
-        <div className="chat-window">
-          {messages.map((message, index) => (
-            <div key={index} className={`chat-bubble ${message.role}`}>
-              {message.content}
-            </div>
-          ))}
-        </div>
-        {imageUrl && (
-          <div className="image-container">
-            <img src={imageUrl} alt="Generated Scene" />
+    <div className="min-h-screen bg-background-dark text-white">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col space-y-8">
+          <div className="chat-window overflow-auto p-6 bg-background-green rounded-lg max-h-[calc(100vh-200px)]">
+            {messages.map((message, index) => (
+              <div key={index} className="mb-6">
+                {message.role === 'image'
+                  ? (
+                  <div className="image-container cursor-pointer" onClick={() => handleImageClick(message.content)}>
+                    <img src={message.content} alt="Generated Scene" className="rounded-lg max-w-full h-auto mx-auto max-h-96" />
+                  </div>
+                    )
+                  : (
+                  <div className={`chat-bubble p-4 rounded-lg ${message.role === 'user' ? 'bg-button-green' : 'bg-blue-500'}`}>
+                    {message.content}
+                  </div>
+                    )}
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-center items-center">
+                <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 animate-spin"></div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+        <form onSubmit={handleSubmit} className="flex items-center space-x-4 mt-8">
+          <input
+            className="flex-1 p-4 border rounded-lg bg-gray-700 text-lg"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+          />
+          <div className="flex space-x-4">
+            <button type="submit" className="px-6 py-4 bg-button-green rounded-lg text-lg font-semibold">Send</button>
+            <button type="button" onClick={generateImage} className="px-6 py-4 bg-button-green rounded-lg text-lg font-semibold">Generate Image</button>
+          </div>
+        </form>
+        <p className="mt-4 text-xl text-center">API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p>
       </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-        />
-        <button type="submit">Send</button>
-      </form>
-      <button onClick={generateImage}>Generate Image</button>
-      <p>API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p>
+      {expandedImage && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50" onClick={handleCloseExpandedImage}>
+          <img src={expandedImage} alt="Expanded Image" className="max-w-full max-h-full" />
+        </div>
+      )}
     </div>
   )
 }
