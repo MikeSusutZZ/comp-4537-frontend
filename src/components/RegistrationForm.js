@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import TextInput from './TextInput'
 import { VStack, Button, Box } from '@chakra-ui/react'
 import axios from 'axios'
+import { API_URL } from '../constants'
 
 // TODO: Replace alert with Chakra UI Toast
 
@@ -18,8 +19,7 @@ function RegistrationForm () {
         validationSchema={registrationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            // await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users', values)
-            await axios.post('http://localhost:4000/users', values)
+            await axios.post(`${API_URL}/users`, values)
             alert("You've successfully registered! Please log in.")
             navigate('/login')
           } catch (error) {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-
-const adminDataAPI = 'https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users'
+import { API_URL } from '../constants'
 
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([])
@@ -11,7 +10,7 @@ const AdminPage = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('http://localhost:4000/verify-token', {
+        const response = await fetch(`${API_URL}/verify-token`, {
           method: 'GET',
           credentials: 'include'
         })
@@ -33,7 +32,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const response = await axios.get(adminDataAPI)
+        const response = await axios.get(`${API_URL}/users`)
         setAdminData(response.data)
       } catch (error) {
         console.error('Error fetching admin data', error)
@@ -47,7 +46,7 @@ const AdminPage = () => {
     console.log(`Resetting calls for email: ${email}`)
     try {
       // Assuming the backend endpoint to reset the call count is expecting a PATCH request with the user's email as a query parameter
-      const response = await axios.patch(`/reset-api-call-count?email=${email}`)
+      const response = await axios.patch(`${API_URL}/reset-api-call-count?email=${email}`)
       console.log('Reset successful', response.data)
       // Optional: Refresh admin data to reflect changes or give visual feedback
     } catch (error) {

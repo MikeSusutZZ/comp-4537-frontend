@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Formik } from 'formik'
 import { VStack, Button, Box } from '@chakra-ui/react'
 import axios from 'axios'
+import { API_URL } from '../constants'
 
 import { loginSchema } from '../schemas/schemas'
 import TextInput from './TextInput'
@@ -23,8 +24,7 @@ function LoginForm () {
 
         onSubmit={async (values, { setSubmitting }) => {
           try {
-            const response = await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
-            // await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users/login', values, { withCredentials: true })
+            const response = await axios.post(`${API_URL}/users/login`, values, { withCredentials: true })
 
             if (response.status === 200) {
               alert("You've successfully logged in!")
