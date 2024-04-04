@@ -1,38 +1,70 @@
 import React, { useState } from 'react'
 import { Form, Formik } from 'formik'
-import { registrationSchema } from '../schemas/schemas'
 import { useNavigate } from 'react-router-dom'
-import TextInput from './TextInput'
-import { VStack, Button, Box } from '@chakra-ui/react'
+import { VStack, Button, Box, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 
-// TODO: Replace alert with Chakra UI Toast
+import TextInput from './TextInput'
+import { registrationSchema } from '../schemas/schemas'
+
+async function register (values, isSubmitting, setServerError) {
+  isSubmitting(true)
+
+  try {
+    const response = await axios.post('http://localhost:4000/users', values, { withCredentials: true })
+
+    const data = response.data
+    if (data.isError) {
+      console.error(data.data)
+      return false
+    }
+    return true
+  } catch (error) {
+    if (!error.response) {
+      setServerError("Server isn't responding. Please try again later.")
+    } else {
+      setServerError(error.response.data)
+    }
+    return false
+  }
+}
 
 function RegistrationForm () {
+  const toast = useToast()
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true)
+    const success = await register(values, setSubmitting, setServerError)
+
+    if (success) {
+      toast({
+        title: 'Registration successful',
+        description: "You've successfully registered!",
+        status: 'success',
+        duration: 9000,
+        isClosable: true
+      })
+      navigate('/login')
+    } else {
+      console.log(success.error)
+      toast({
+        title: 'Registration failed',
+        description: 'Please try again',
+        status: 'error',
+        duration: 9000,
+        isClosable: true
+      })
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={registrationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            // await axios.post('https://comp-4537-pv5-project-backend-b23c9c33cda3.herokuapp.com/users', values)
-            await axios.post('http://localhost:4000/users', values)
-            alert("You've successfully registered! Please log in.")
-            navigate('/login')
-          } catch (error) {
-            if (error.response) {
-              setServerError(error.response.data)
-            } else if (error.response.status === 409) {
-              setServerError(error.response.data)
-            } else if (error.response.status === 500) {
-              setServerError(error.response.data)
-            }
-          }
-          setSubmitting(false)
-        }}
+        onSubmit={handleSubmit}
     >
     {formik => (
       <Form>
@@ -46,7 +78,7 @@ function RegistrationForm () {
             type="submit"
             w={'100%'}
             variant='solid'
-            disabled={formik.isSubmitting}>
+            isLoading={formik.isSubmitting}>
             Sign Up
           </Button>
 
