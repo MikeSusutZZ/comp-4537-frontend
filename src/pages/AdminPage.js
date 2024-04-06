@@ -40,13 +40,13 @@ const AdminPage = () => {
     }
 
     fetchAdminData()
-  }, [])
+  }, [adminData])
 
   const resetCalls = async (email) => {
     console.log(`Resetting calls for email: ${email}`)
     try {
-      // Assuming the backend endpoint to reset the call count is expecting a PATCH request with the user's email as a query parameter
-      const response = await axios.patch(`${API_URL}/reset-api-call-count?email=${email}`)
+      const encodedEmail = encodeURIComponent(email)
+      const response = await axios.patch(`${API_URL}/reset-api-call-count/${encodedEmail}`)
       console.log('Reset successful', response.data)
       // Optional: Refresh admin data to reflect changes or give visual feedback
     } catch (error) {

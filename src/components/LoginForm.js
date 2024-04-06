@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Formik } from 'formik'
-import { VStack, Button, Box } from '@chakra-ui/react'
+import { VStack, Button, Box, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import { API_URL } from '../constants'
 
@@ -9,41 +9,65 @@ import { loginSchema } from '../schemas/schemas'
 import TextInput from './TextInput'
 
 // TODO: Create file for constants, user-facing messages
-// TODO: Create server status response constants
-// TODO: Replace alert with Chakra UI Toast
+
+async function login (values, setSubmitting, setServerError) {
+  setSubmitting(true)
+
+  try {
+    const response = await axios.post(`${API_URL}/users/login`, values, { withCredentials: true })
+
+    const data = response.data
+    if (data.isError) {
+      console.error(data.data)
+      return false
+    }
+    return true
+  } catch (error) {
+    if (!error.response) {
+      setServerError("Server isn't responding. Please try again later.")
+    } else {
+      setServerError(error.response.data)
+    }
+    return false
+  }
+}
 
 function LoginForm () {
+  const toast = useToast()
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true)
+    const success = await login(values, setSubmitting, setServerError)
+
+    if (success) {
+      toast({
+        title: 'Login successful',
+        description: "You've successfully logged in!",
+        status: 'success',
+        duration: 9000,
+        isClosable: true
+      })
+      navigate('/home')
+    } else {
+      console.log(success.error)
+      toast({
+        title: 'Login failed',
+        description: 'Please try again',
+        status: 'error',
+        duration: 9000,
+        isClosable: true
+      })
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Formik
         initialValues={{ email: '', password: '' }}
-
         validationSchema={loginSchema}
-
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            const response = await axios.post(`${API_URL}/users/login`, values, { withCredentials: true })
-
-            if (response.status === 200) {
-              alert("You've successfully logged in!")
-              navigate('/home')
-            }
-          } catch (error) {
-            if (!error.response) {
-              setServerError("Server isn't responding. Please try again later.")
-            } else if (error.response.status === 401) {
-              setServerError(error.response.data)
-            } else if (error.response.status === 404) {
-              setServerError(error.response.data)
-            } else if (error.response.status === 500) {
-              setServerError(error.response.data)
-            }
-          } finally {
-            setSubmitting(false)
-          }
-        }}
+        onSubmit={handleSubmit}
     >
     {formik => (
       <Form>
@@ -56,9 +80,10 @@ function LoginForm () {
 
           <Button
             type="submit"
-            isLoading={formik.isSubmitting}
             w={'100%'}
-            variant='solid'>
+            variant='solid'
+            isLoading={formik.isSubmitting}
+            >
             Login
           </Button>
 
