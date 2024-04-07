@@ -96,6 +96,15 @@ function LoginForm () {
             </Button>
           </Box>
 
+          <Box>
+            <Button
+              onClick={() => navigate('/forgot-password')}
+              variant='link'
+              colorScheme='blue'>
+              Forgot password?
+            </Button>
+          </Box>
+
         </VStack>
       </Form>
     )}
