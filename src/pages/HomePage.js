@@ -153,27 +153,39 @@ function App () {
     return false
   }
 
+  const RenderMessages = () => {
+    return messages.map((message, index) => (
+      <div key={index} className="mb-6">
+        {message.role === 'image'
+          ? (
+          <div className="image-container cursor-pointer" onClick={() => handleImageClick(message.content)}>
+            <img src={message.content} alt="Generated Scene" className="rounded-lg max-w-full h-auto mx-auto max-h-96" />
+          </div>
+            )
+          : (
+          <div className={`chat-bubble p-4 rounded-lg ${message.role === 'user' ? 'bg-button-green' : 'bg-blue-500'}`}>
+            {message.content}
+          </div>
+            )}
+      </div>
+    ))
+  }
+
   return (
     <div className="min-h-screen bg-background-dark text-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col space-y-8">
           <button className='px-6 py-4 bg-blue-400 text-lg rounded-lg font-bold self-end' onClick={logOut}>Logout</button>
           <div className="chat-window overflow-auto p-6 bg-background-green rounded-lg max-h-[calc(100vh-200px)]">
-            {messages.map((message, index) => (
-              <div key={index} className="mb-6">
-                {message.role === 'image'
-                  ? (
-                  <div className="image-container cursor-pointer" onClick={() => handleImageClick(message.content)}>
-                    <img src={message.content} alt="Generated Scene" className="rounded-lg max-w-full h-auto mx-auto max-h-96" />
-                  </div>
-                    )
-                  : (
-                  <div className={`chat-bubble p-4 rounded-lg ${message.role === 'user' ? 'bg-button-green' : 'bg-blue-500'}`}>
-                    {message.content}
-                  </div>
-                    )}
-              </div>
-            ))}
+            {
+            messages.length > 0
+              ? RenderMessages()
+              : <div className="flex justify-center items-center py-6">
+                  <i className='font-light text-2xl'>
+                    Begin with a prompt to start your amazing adventure!
+                  </i>
+                </div>
+            }
             {isLoading && (
               <div className="flex justify-center items-center">
                 <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 animate-spin"></div>
