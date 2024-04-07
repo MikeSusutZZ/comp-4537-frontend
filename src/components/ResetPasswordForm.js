@@ -6,6 +6,7 @@ import { Box, Button, VStack, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import TextInput from '../components/TextInput'
 import PageLayout from '../components/PageLayout'
+import { API_URL } from '../constants'
 
 const ResetPasswordForm = () => {
   const { token } = useParams() // This assumes you're using react-router-dom
@@ -15,7 +16,7 @@ const ResetPasswordForm = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true)
     try {
-      await axios.post(`http://localhost:4000/reset-password/${token}`, values)
+      await axios.post(`${API_URL}/reset-password/${token}`, values)
       toast({
         title: 'Password Reset Successful',
         description: 'Your password has been updated. You can now log in with your new password.',

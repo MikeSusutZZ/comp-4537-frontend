@@ -5,10 +5,11 @@ import { VStack, Button, useToast } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import TextInput from './TextInput'
+import { API_URL } from '../constants'
 
 async function requestPasswordReset (values, setSubmitting) {
   try {
-    const response = await axios.post('http://localhost:4000/forgot-password', values)
+    const response = await axios.post(`${API_URL}/forgot-password`, values)
     const data = response.data
 
     if (data.isError) {
