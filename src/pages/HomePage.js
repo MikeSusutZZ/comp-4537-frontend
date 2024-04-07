@@ -205,7 +205,7 @@ function App () {
             <button type="button" onClick={generateImage} className="px-6 py-4 bg-button-green rounded-lg text-lg font-semibold">Generate Image</button>
           </div>
         </form>
-        <ApiCallCounter count={apiCallCounter}/>
+        <ApiCallCounter count={apiCallCounter} setCount={setApiCallCounter}/>
       </div>
       {expandedImage && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50" onClick={handleCloseExpandedImage}>
