@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useToast } from '@chakra-ui/react'
+import ApiCallCounter from '../components/ApiCallCounter'
 
 function App () {
   const [messages, setMessages] = useState([])
@@ -10,32 +11,12 @@ function App () {
   const [expandedImage, setExpandedImage] = useState(null)
   const navigate = useNavigate()
   const [apiCallCounter, setApiCallCounter] = useState(0)
-  const MAX_API_CALLS = 20
   const toast = useToast()
 
   useEffect(() => {
     // Check authentication on mount
     checkAuth()
   }, [navigate])
-
-  useEffect(() => {
-    async function getCallCount () {
-      fetch(`${API_URL}/api-call-count`, {
-        method: 'GET',
-        credentials: 'include'
-      }).then((res) => {
-        return res.json()
-      }).then(({ count }) => {
-        setApiCallCounter(parseInt(count))
-      })
-    }
-
-    try {
-      getCallCount()
-    } catch (err) {
-      console.error(err)
-    }
-  })
 
   const checkAuth = async () => {
     try {
@@ -224,7 +205,7 @@ function App () {
             <button type="button" onClick={generateImage} className="px-6 py-4 bg-button-green rounded-lg text-lg font-semibold">Generate Image</button>
           </div>
         </form>
-        <p className="mt-4 text-xl text-center">API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p>
+        <ApiCallCounter count={apiCallCounter}/>
       </div>
       {expandedImage && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50" onClick={handleCloseExpandedImage}>
