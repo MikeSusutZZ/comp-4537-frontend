@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../constants'
-import { useToast } from '@chakra-ui/react'
+import { useToast, Spinner } from '@chakra-ui/react'
 import ApiCallCounter from '../components/ApiCallCounter'
 
 function App () {
@@ -90,6 +90,7 @@ function App () {
   }
 
   const fetchAssistantReply = async (messageHistory) => {
+    setIsLoading(true)
     try {
       const filteredMessageHistory = messageHistory.filter(
         (message) => message.role !== 'image'
@@ -121,6 +122,8 @@ function App () {
         duration: 1500,
         isClosable: true
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -188,7 +191,7 @@ function App () {
             }
             {isLoading && (
               <div className="flex justify-center items-center">
-                <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 animate-spin"></div>
+                <Spinner size="xl" color="blue.500" />
               </div>
             )}
           </div>
