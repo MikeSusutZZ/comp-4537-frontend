@@ -18,6 +18,25 @@ function App () {
     checkAuth()
   }, [navigate])
 
+  useEffect(() => {
+    async function getCallCount () {
+      fetch(`${API_URL}/api-call-count`, {
+        method: 'GET',
+        credentials: 'include'
+      }).then((res) => {
+        return res.json()
+      }).then(({ count }) => {
+        setApiCallCounter(parseInt(count))
+      })
+    }
+
+    try {
+      getCallCount()
+    } catch (err) {
+      console.error(err)
+    }
+  })
+
   const checkAuth = async () => {
     try {
       const response = await fetch(`${API_URL}/verify-token`, {
