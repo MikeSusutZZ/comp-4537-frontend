@@ -4,10 +4,11 @@ import { API_URL } from '../constants'
 
 ApiCallCounter.propTypes = {
   count: PropTypes.number,
+  setCount: PropTypes.func,
   refresh: PropTypes.bool
 }
 
-function ApiCallCounter ({ count, refresh }) {
+function ApiCallCounter ({ count, setCount, refresh }) {
   const MAX_API_CALLS = 20
 
   useEffect(() => {
@@ -18,7 +19,7 @@ function ApiCallCounter ({ count, refresh }) {
       }).then((res) => {
         return res.json()
       }).then(({ count: newCount }) => {
-        count = parseInt(newCount)
+        setCount(parseInt(newCount))
       })
     }
 
