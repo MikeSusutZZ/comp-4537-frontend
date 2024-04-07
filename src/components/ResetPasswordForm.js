@@ -5,7 +5,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Button, VStack, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import TextInput from '../components/TextInput'
-import PageLayout from '../components/PageLayout'
 import { API_URL } from '../constants'
 
 const ResetPasswordForm = () => {
@@ -38,34 +37,32 @@ const ResetPasswordForm = () => {
   }
 
   return (
-        <PageLayout>
-        <Formik
-            initialValues={{ newPassword: '' }}
-            onSubmit={handleSubmit}
-        >
-            {formik => (
-                <Form>
-                    <VStack spacing={4}>
-                        <TextInput
-                            name='newPassword'
-                            type='password'
-                            placeholder='Enter your new password'
-                        />
-                        <Box width={'100%'}>
-                            <Button
-                                type='submit'
-                                isLoading={formik.isSubmitting}
-                                width={'100%'}
-                                variant={'solid'}
-                            >
-                                Reset Password
-                            </Button>
-                        </Box>
-                    </VStack>
-                </Form>
-            )}
-        </Formik>
-        </PageLayout>
+    <Formik
+        initialValues={{ newPassword: '' }}
+        onSubmit={handleSubmit}
+    >
+      {formik => (
+        <Form>
+          <VStack spacing={4}>
+            <TextInput
+              name='newPassword'
+              type='password'
+              placeholder='Enter your new password'
+            />
+            <Box width={'100%'}>
+              <Button
+                type='submit'
+                isLoading={formik.isSubmitting}
+                width={'100%'}
+                variant={'solid'}
+              >
+                Reset Password
+              </Button>
+            </Box>
+          </VStack>
+        </Form>
+      )}
+    </Formik>
   )
 }
 
