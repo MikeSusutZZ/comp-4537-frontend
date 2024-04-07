@@ -47,7 +47,11 @@ const AdminPage = () => {
     console.log(`Resetting calls for email: ${email}`)
     try {
       const encodedEmail = encodeURIComponent(email)
-      const response = await axios.patch(`${API_URL}/reset-api-call-count/${encodedEmail}`, { credentials: 'include' })
+      const response = await axios({
+        method: 'patch',
+        url: `${API_URL}/reset-api-call-count/${encodedEmail}`,
+        withCredentials: true
+      })
       setRefreshAdminData(!refreshAdminData)
       console.log('Reset successful', response.data)
       // Optional: Refresh admin data to reflect changes or give visual feedback
