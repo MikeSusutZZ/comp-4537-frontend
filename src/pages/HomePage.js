@@ -34,6 +34,24 @@ function App () {
     }
   }
 
+  const logOut = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/logout`, { method: 'POST' })
+      if (!response.ok) {
+        throw new Error('Could not log out')
+      }
+      navigate('/login')
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Could not log out. Please try again.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true
+      })
+    }
+  }
+
   const generateImage = async () => {
     setIsLoading(true)
     const lastMessage = messages[messages.length - 1]
@@ -139,6 +157,7 @@ function App () {
     <div className="min-h-screen bg-background-dark text-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col space-y-8">
+          <button className='px-6 py-4 bg-blue-400 text-lg rounded-lg font-bold self-end' onClick={logOut}>Logout</button>
           <div className="chat-window overflow-auto p-6 bg-background-green rounded-lg max-h-[calc(100vh-200px)]">
             {messages.map((message, index) => (
               <div key={index} className="mb-6">
