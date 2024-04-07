@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../constants'
+import { useToast } from '@chakra-ui/react'
 
 function App () {
   const [messages, setMessages] = useState([])
@@ -10,6 +11,7 @@ function App () {
   const navigate = useNavigate()
   const [apiCallCounter, setApiCallCounter] = useState(0)
   const MAX_API_CALLS = 20
+  const toast = useToast()
 
   useEffect(() => {
     // Check authentication on mount
@@ -45,6 +47,7 @@ function App () {
             'Content-Type': 'application/json'
           }
         })
+        if (handleSessionTimeout(response)) return
         if (!response.ok) {
           throw new Error('Failed to generate image')
         }
@@ -55,7 +58,13 @@ function App () {
         ])
         setApiCallCounter((prevCount) => prevCount + 1)
       } catch (error) {
-        console.error(error.message)
+        toast({
+          title: 'Error Generating Image',
+          description: error.message,
+          status: 'error',
+          duration: 1500,
+          isClosable: true
+        })
       } finally {
         setIsLoading(false)
       }
@@ -75,6 +84,7 @@ function App () {
           'Content-Type': 'application/json'
         }
       })
+      if (handleSessionTimeout(response)) return
       if (!response.ok) {
         throw new Error('Failed to fetch assistant reply')
       }
@@ -86,7 +96,13 @@ function App () {
       ])
       setApiCallCounter((prevCount) => prevCount + 1)
     } catch (error) {
-      console.error(error.message)
+      toast({
+        title: 'Error Generating Reply',
+        description: error.message,
+        status: 'error',
+        duration: 1500,
+        isClosable: true
+      })
     }
   }
 
@@ -103,6 +119,20 @@ function App () {
 
   const handleCloseExpandedImage = () => {
     setExpandedImage(null)
+  }
+
+  const handleSessionTimeout = (res) => {
+    if (res.status === 401 || res.status === 403) {
+      toast({
+        title: 'Error',
+        description: 'Session timed out. Please log in again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+      return true
+    }
+    return false
   }
 
   return (
