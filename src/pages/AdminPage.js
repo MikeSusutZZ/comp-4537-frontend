@@ -64,7 +64,11 @@ const AdminPage = () => {
     console.log(`Deleting user with email: ${email}`)
     try {
       const encodedEmail = encodeURIComponent(email)
-      const response = await axios.delete(`${API_URL}/delete-user/${encodedEmail}`)
+      const response = await axios({
+        method: 'delete', // Specify the method as 'delete'
+        url: `${API_URL}/delete-user/${encodedEmail}`, // Set the URL with the encoded email
+        withCredentials: true // Include credentials if needed, as in your PATCH example
+      })
       setRefreshAdminData(!refreshAdminData)
       console.log('User deleted', response.data)
     } catch (error) {
