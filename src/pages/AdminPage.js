@@ -5,6 +5,7 @@ import { API_URL } from '../constants'
 
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([])
+  const [refreshAdminData, setRefreshAdminData] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -40,13 +41,14 @@ const AdminPage = () => {
     }
 
     fetchAdminData()
-  }, [adminData])
+  }, [refreshAdminData])
 
   const resetCalls = async (email) => {
     console.log(`Resetting calls for email: ${email}`)
     try {
       const encodedEmail = encodeURIComponent(email)
       const response = await axios.patch(`${API_URL}/reset-api-call-count/${encodedEmail}`)
+      setRefreshAdminData(!refreshAdminData)
       console.log('Reset successful', response.data)
       // Optional: Refresh admin data to reflect changes or give visual feedback
     } catch (error) {
