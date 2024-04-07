@@ -56,6 +56,31 @@ const AdminPage = () => {
     }
   }
 
+  const deleteUser = async (email) => {
+    console.log(`Deleting user with email: ${email}`)
+    try {
+      const encodedEmail = encodeURIComponent(email)
+      const response = await axios.delete(`${API_URL}/delete-user/${encodedEmail}`)
+      setRefreshAdminData(!refreshAdminData)
+      console.log('User deleted', response.data)
+    } catch (error) {
+      console.error('Error deleting user', error)
+    }
+  }
+
+  const promoteUser = async (email) => {
+    console.log(`Resetting calls for email: ${email}`)
+    try {
+      const encodedEmail = encodeURIComponent(email)
+      const response = await axios.patch(`${API_URL}/reset-api-call-count/${encodedEmail}`)
+      setRefreshAdminData(!refreshAdminData)
+      console.log('Reset successful', response.data)
+      // Optional: Refresh admin data to reflect changes or give visual feedback
+    } catch (error) {
+      console.error('Error resetting calls', error)
+    }
+  }
+
   const pageStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -112,6 +137,18 @@ const AdminPage = () => {
                   onClick={() => resetCalls(item.email)} // Now using email to identify the user for reset
                 >
                   Reset Calls
+                </button>
+                <button
+                  style={buttonStyle}
+                  onClick={() => deleteUser(item.email)}
+                >
+                  Delete
+                </button>
+                <button
+                  style={buttonStyle}
+                  onClick={() => promoteUser(item.email)}
+                >
+                  Promote
                 </button>
               </td>
             </tr>
