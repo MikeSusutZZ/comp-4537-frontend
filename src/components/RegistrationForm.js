@@ -3,6 +3,7 @@ import { Form, Formik } from 'formik'
 import { useNavigate } from 'react-router-dom'
 import { VStack, Button, Box, useToast } from '@chakra-ui/react'
 import axios from 'axios'
+import { API_URL } from '../constants'
 
 import TextInput from './TextInput'
 import { registrationSchema } from '../schemas/schemas'
@@ -11,7 +12,7 @@ async function register (values, isSubmitting, setServerError) {
   isSubmitting(true)
 
   try {
-    const response = await axios.post('http://localhost:4000/users', values, { withCredentials: true })
+    const response = await axios.post(`${API_URL}/users`, values, { withCredentials: true })
 
     const data = response.data
     if (data.isError) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useToast } from '@chakra-ui/react'
 
 function App () {
@@ -19,7 +20,7 @@ function App () {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('http://localhost:4000/verify-token', {
+      const response = await fetch(`${API_URL}/verify-token`, {
         method: 'GET',
         credentials: 'include'
       })
@@ -38,7 +39,7 @@ function App () {
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.role === 'assistant') {
       try {
-        const response = await fetch('http://localhost:4000/generate-image', {
+        const response = await fetch(`${API_URL}/generate-image`, {
           method: 'POST',
           credentials: 'include',
           body: JSON.stringify({ prompt: lastMessage.content }),
@@ -75,7 +76,7 @@ function App () {
       const filteredMessageHistory = messageHistory.filter(
         (message) => message.role !== 'image'
       )
-      const response = await fetch('http://localhost:4000/chat', {
+      const response = await fetch(`${API_URL}/chat`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ messages: filteredMessageHistory }),

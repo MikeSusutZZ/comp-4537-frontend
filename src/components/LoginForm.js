@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Form, Formik } from 'formik'
 import { VStack, Button, Box, useToast } from '@chakra-ui/react'
 import axios from 'axios'
+import { API_URL } from '../constants'
 
 import { loginSchema } from '../schemas/schemas'
 import TextInput from './TextInput'
@@ -13,7 +14,7 @@ async function login (values, setSubmitting, setServerError) {
   setSubmitting(true)
 
   try {
-    const response = await axios.post('http://localhost:4000/users/login', values, { withCredentials: true })
+    const response = await axios.post(`${API_URL}/users/login`, values, { withCredentials: true })
 
     const data = response.data
     if (data.isError) {
