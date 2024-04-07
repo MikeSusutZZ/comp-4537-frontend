@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useToast } from '@chakra-ui/react'
+import ApiCallCounter from '../components/ApiCallCounter'
 
 function App () {
   const [messages, setMessages] = useState([])
@@ -10,7 +11,6 @@ function App () {
   const [expandedImage, setExpandedImage] = useState(null)
   const navigate = useNavigate()
   const [apiCallCounter, setApiCallCounter] = useState(0)
-  const MAX_API_CALLS = 20
   const toast = useToast()
 
   useEffect(() => {
@@ -31,6 +31,24 @@ function App () {
     } catch (error) {
       console.error(error)
       navigate('/login') // Navigate to login if unauthorized
+    }
+  }
+
+  const logOut = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users/logout`, { method: 'POST' })
+      if (!response.ok) {
+        throw new Error('Could not log out')
+      }
+      navigate('/login')
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Could not log out. Please try again.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true
+      })
     }
   }
 
@@ -86,7 +104,7 @@ function App () {
       })
       if (handleSessionTimeout(response)) return
       if (!response.ok) {
-        throw new Error('Failed to fetch assistant reply')
+        throw new Error(await response.text())
       }
       const data = await response.json()
       setMessages((prevMessages) => [
@@ -122,7 +140,7 @@ function App () {
   }
 
   const handleSessionTimeout = (res) => {
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
       toast({
         title: 'Error',
         description: 'Session timed out. Please log in again.',
@@ -135,26 +153,39 @@ function App () {
     return false
   }
 
+  const RenderMessages = () => {
+    return messages.map((message, index) => (
+      <div key={index} className="mb-6">
+        {message.role === 'image'
+          ? (
+          <div className="image-container cursor-pointer" onClick={() => handleImageClick(message.content)}>
+            <img src={message.content} alt="Generated Scene" className="rounded-lg max-w-full h-auto mx-auto max-h-96" />
+          </div>
+            )
+          : (
+          <div className={`chat-bubble p-4 rounded-lg ${message.role === 'user' ? 'bg-button-green' : 'bg-blue-500'}`}>
+            {message.content}
+          </div>
+            )}
+      </div>
+    ))
+  }
+
   return (
     <div className="min-h-screen bg-background-dark text-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex flex-col space-y-8">
+          <button className='px-6 py-4 bg-blue-400 text-lg rounded-lg font-bold self-end' onClick={logOut}>Logout</button>
           <div className="chat-window overflow-auto p-6 bg-background-green rounded-lg max-h-[calc(100vh-200px)]">
-            {messages.map((message, index) => (
-              <div key={index} className="mb-6">
-                {message.role === 'image'
-                  ? (
-                  <div className="image-container cursor-pointer" onClick={() => handleImageClick(message.content)}>
-                    <img src={message.content} alt="Generated Scene" className="rounded-lg max-w-full h-auto mx-auto max-h-96" />
-                  </div>
-                    )
-                  : (
-                  <div className={`chat-bubble p-4 rounded-lg ${message.role === 'user' ? 'bg-button-green' : 'bg-blue-500'}`}>
-                    {message.content}
-                  </div>
-                    )}
-              </div>
-            ))}
+            {
+            messages.length > 0
+              ? RenderMessages()
+              : <div className="flex justify-center items-center py-6">
+                  <i className='font-light text-2xl'>
+                    Begin with a prompt to start your amazing adventure!
+                  </i>
+                </div>
+            }
             {isLoading && (
               <div className="flex justify-center items-center">
                 <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 animate-spin"></div>
@@ -174,7 +205,7 @@ function App () {
             <button type="button" onClick={generateImage} className="px-6 py-4 bg-button-green rounded-lg text-lg font-semibold">Generate Image</button>
           </div>
         </form>
-        <p className="mt-4 text-xl text-center">API Calls Remaining: {MAX_API_CALLS - apiCallCounter}</p>
+        <ApiCallCounter count={apiCallCounter}/>
       </div>
       {expandedImage && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50" onClick={handleCloseExpandedImage}>
