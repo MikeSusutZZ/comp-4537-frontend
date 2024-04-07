@@ -86,7 +86,7 @@ function App () {
       })
       if (handleSessionTimeout(response)) return
       if (!response.ok) {
-        throw new Error('Failed to fetch assistant reply')
+        throw new Error(await response.text())
       }
       const data = await response.json()
       setMessages((prevMessages) => [
@@ -122,7 +122,7 @@ function App () {
   }
 
   const handleSessionTimeout = (res) => {
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
       toast({
         title: 'Error',
         description: 'Session timed out. Please log in again.',
