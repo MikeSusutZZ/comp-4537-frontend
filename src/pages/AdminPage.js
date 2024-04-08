@@ -34,7 +34,10 @@ const AdminPage = () => {
     const fetchAdminData = async () => {
       try {
         const response = await axios.get(`${API_URL}/users`)
-        setAdminData(response.data)
+        setAdminData(response.data.map(user => ({
+          ...user,
+          isAdminSymbol: user.isAdmin ? '✔️' : '❌' // Adding symbolic representation
+        })))
       } catch (error) {
         console.error('Error fetching admin data', error)
       }
@@ -77,14 +80,18 @@ const AdminPage = () => {
   }
 
   const promoteUser = async (email) => {
-    console.log(`Resetting calls for email: ${email}`)
+    console.log(`Promoting user with email: ${email}`)
     try {
       const encodedEmail = encodeURIComponent(email)
-      const response = await axios.patch(`${API_URL}/promote/${encodedEmail}`)
+      const response = await axios({
+        method: 'patch', // Specify the method as 'patch'
+        url: `${API_URL}/promote-user/${encodedEmail}`, // Set the URL with the encoded email
+        withCredentials: true // Include credentials if needed for cross-origin requests
+      })
       setRefreshAdminData(!refreshAdminData)
       console.log('Promotion Successful', response.data)
     } catch (error) {
-      console.error('Error promoting', error)
+      console.error('Error promoting user', error)
     }
   }
 
@@ -130,6 +137,7 @@ const AdminPage = () => {
           <tr>
             <th style={thStyle}>Email</th>
             <th style={thStyle}>API Calls</th>
+            <th style={thStyle}>Is Admin</th>
             <th style={thStyle}>Actions</th>
           </tr>
         </thead>
@@ -138,23 +146,15 @@ const AdminPage = () => {
             <tr key={index}>
               <td style={thTdStyle}>{item.email}</td>
               <td style={thTdStyle}>{item.apiCallCounter}</td>
+              <td style={thTdStyle}>{item.isAdminSymbol}</td>
               <td style={thTdStyle}>
-                <button
-                  style={buttonStyle}
-                  onClick={() => resetCalls(item.email)} // Now using email to identify the user for reset
-                >
+                <button style={buttonStyle} onClick={() => resetCalls(item.email)}>
                   Reset Calls
                 </button>
-                <button
-                  style={buttonStyle}
-                  onClick={() => deleteUser(item.email)}
-                >
+                <button style={buttonStyle} onClick={() => deleteUser(item.email)}>
                   Delete
                 </button>
-                <button
-                  style={buttonStyle}
-                  onClick={() => promoteUser(item.email)}
-                >
+                <button style={buttonStyle} onClick={() => promoteUser(item.email)}>
                   Promote
                 </button>
               </td>
