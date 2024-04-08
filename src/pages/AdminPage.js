@@ -11,7 +11,7 @@ const AdminPage = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch(`${API_URL}/verify-token`, {
+        const response = await fetch(`${API_URL}/verify-admin`, {
           method: 'GET',
           credentials: 'include'
         })
@@ -80,12 +80,11 @@ const AdminPage = () => {
     console.log(`Resetting calls for email: ${email}`)
     try {
       const encodedEmail = encodeURIComponent(email)
-      const response = await axios.patch(`${API_URL}/reset-api-call-count/${encodedEmail}`)
+      const response = await axios.patch(`${API_URL}/promote/${encodedEmail}`)
       setRefreshAdminData(!refreshAdminData)
-      console.log('Reset successful', response.data)
-      // Optional: Refresh admin data to reflect changes or give visual feedback
+      console.log('Promotion Successful', response.data)
     } catch (error) {
-      console.error('Error resetting calls', error)
+      console.error('Error promoting', error)
     }
   }
 
