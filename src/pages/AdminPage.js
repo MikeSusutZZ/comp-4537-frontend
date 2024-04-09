@@ -112,32 +112,28 @@ const AdminPage = () => {
     }
   }
 
-  const pageStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '50px'
-  }
-
-  const tableWrapperStyle = {
-    maxWidth: '100%', // Set the max width to prevent overflow
-    overflowX: 'auto' // Enable horizontal scrolling
+  const cellStyle = {
+    maxWidth: '400px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    padding: '8px',
+    border: '1px solid #ddd'
   }
 
   const tableStyle = {
     borderCollapse: 'collapse',
-    minWidth: '600px' // Ensure table has a minimum width
+    minWidth: '600px',
+    maxWidth: '100%'
   }
 
-  const thTdStyle = {
-    border: '1px solid #ddd',
-    textAlign: 'left',
-    padding: '8px'
+  const tableWrapperStyle = {
+    maxWidth: '100%',
+    overflowX: 'auto'
   }
 
   const thStyle = {
-    ...thTdStyle,
+    ...cellStyle,
     backgroundColor: '#f2f2f2'
   }
 
@@ -148,6 +144,14 @@ const AdminPage = () => {
     borderRadius: '5px',
     backgroundColor: '#4CAF50',
     color: 'white'
+  }
+
+  const pageStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '50px'
   }
 
   return (
@@ -165,10 +169,10 @@ const AdminPage = () => {
         <tbody>
           {adminData.map((item, index) => (
             <tr key={index}>
-              <td style={thTdStyle}>{item.email}</td>
-              <td style={thTdStyle}>{item.apiCallCounter}</td>
-              <td style={thTdStyle}>{item.isAdminSymbol}</td>
-              <td style={thTdStyle}>
+              <td style={cellStyle}>{item.email}</td>
+              <td style={cellStyle}>{item.apiCallCounter}</td>
+              <td style={cellStyle}>{item.isAdminSymbol}</td>
+              <td style={cellStyle}>
                 <button style={buttonStyle} onClick={() => resetCalls(item.email)}>
                   Reset Calls
                 </button>
@@ -197,10 +201,10 @@ const AdminPage = () => {
           <tbody>
             {routeStats.map((stat, index) => (
               <tr key={index}>
-                <td style={thTdStyle}>{stat.email}</td>
-                <td style={thTdStyle}>{stat.method}</td>
-                <td style={thTdStyle}>{stat.route}</td>
-                <td style={thTdStyle}>{stat.count}</td>
+                <td style={cellStyle}>{stat.email}</td>
+                <td style={cellStyle}>{stat.method}</td>
+                <td style={cellStyle}>{stat.route}</td>
+                <td style={cellStyle}>{stat.count}</td>
               </tr>
             ))}
           </tbody>
