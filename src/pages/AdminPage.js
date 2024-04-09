@@ -5,6 +5,7 @@ import { API_URL } from '../constants'
 
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([])
+  const [routeStats, setRouteStats] = useState([]) // Step 1: State for route stats
   const [refreshAdminData, setRefreshAdminData] = useState(false)
   const navigate = useNavigate()
 
@@ -44,6 +45,22 @@ const AdminPage = () => {
     }
 
     fetchAdminData()
+  }, [refreshAdminData])
+
+  useEffect(() => {
+    // Step 2: Fetch Data
+    const fetchRouteStats = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api-route-stats`, {
+          withCredentials: true // Assuming your API requires credentials
+        })
+        setRouteStats(response.data)
+      } catch (error) {
+        console.error('Error fetching route stats', error)
+      }
+    }
+
+    fetchRouteStats()
   }, [refreshAdminData])
 
   const resetCalls = async (email) => {
@@ -103,10 +120,14 @@ const AdminPage = () => {
     marginTop: '50px'
   }
 
+  const tableWrapperStyle = {
+    maxWidth: '100%', // Set the max width to prevent overflow
+    overflowX: 'auto' // Enable horizontal scrolling
+  }
+
   const tableStyle = {
     borderCollapse: 'collapse',
-    width: '80%',
-    maxWidth: '600px'
+    minWidth: '600px' // Ensure table has a minimum width
   }
 
   const thTdStyle = {
@@ -162,6 +183,29 @@ const AdminPage = () => {
           ))}
         </tbody>
       </table>
+      <h2>API Route Statistics</h2>
+      <div style={tableWrapperStyle}>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>User Email</th>
+              <th style={thStyle}>HTTP Method</th>
+              <th style={thStyle}>Route</th>
+              <th style={thStyle}>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {routeStats.map((stat, index) => (
+              <tr key={index}>
+                <td style={thTdStyle}>{stat.email}</td>
+                <td style={thTdStyle}>{stat.method}</td>
+                <td style={thTdStyle}>{stat.route}</td>
+                <td style={thTdStyle}>{stat.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
